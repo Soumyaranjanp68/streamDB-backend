@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
-const {createUser, getUser , loginUser } = require("../controller/userController");
-const {createMovie, getMovies, updateMovie } = require("../controller/movieController");
+const {createUser, loginUser } = require("../controller/userController");
+const {createMovie,getMovies, updateMovie } = require("../controller/movieController");
 const {reviewMovies} = require("../controller/reviewController");
 const {authentication} = require("../middleWare/commonMiddleWare");
 
@@ -11,11 +11,13 @@ router.post("/login", loginUser);
 router.post("/movies", authentication, createMovie);
 router.post("/movies/:movie/reviews", authentication, reviewMovies);
 
-router.get("/user/me", authentication , getUser);
-router.get("/movies", getMovies);
+
+router.get("/moviesList", getMovies);
+
+
 
 router.put("/movies/:movie", updateMovie)
-
+  
 
 
 router.all('/*', (req , res) => {

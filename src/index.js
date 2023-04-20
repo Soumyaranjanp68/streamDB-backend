@@ -1,5 +1,4 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const route = require("./routes/route");
@@ -18,7 +17,7 @@ mongoose.connect("mongodb+srv://Soumyaranjan:utnipsom@soumya-db.3rzvirb.mongodb.
     .catch((err) => console.log(err));
 
 app.use("/", route);
-app.use(cookieParser());
+
 
 let port = 3001;
 app.listen(port, function () {

@@ -12,11 +12,11 @@ const createUser = async function ( req , res ) {
             return res.status(400).send({ status: false, message: "Request can't be empty" });
         }
 
-        if (!name || !name.trim()) {
+        if (!name) {
             return res.status(400).send({ status: false, message: "Name must be required or it can't be empty" });
         }
 
-        if (!validateName(name.trim())) {
+        if (!validateName(name)) {
             return res.status(400).send({ status: false, message: "Enter a valid name" });
         }
 
@@ -35,11 +35,11 @@ const createUser = async function ( req , res ) {
             return res.status(400).send({ status: false, message: "phone is already exist,enter a unique number" });
         }
 
-        if (!email || !email.trim()) {
+        if (!email) {
             return res.status(400).send({ status: false, message: "Email must be required or email can't be empty" });
         }
 
-        if (!validateEmail(email.trim())) {
+        if (!validateEmail(email)) {
             return res.status(400).send({ status: false, message: "Enter a valid email" });
         }
 
@@ -50,11 +50,11 @@ const createUser = async function ( req , res ) {
         }
 
 
-        if (!password || !password.trim()) {
+        if (!password ) {
             return res.status(400).send({ status: false, message: "password must be required or password can't be empty" });
         }
 
-        if (!validatePassword(password.trim())) {
+        if (!validatePassword(password)) {
             return res.status(400).send({ status: false, message: "Password Must be 8-15 length,consist of mixed character and special character" });
         }
 
@@ -69,28 +69,6 @@ const createUser = async function ( req , res ) {
 }
 
 
-
-//======================================= GET User =======================================================//
-
-const getUser = async function ( req, res ) {
-    try {
-        const userId = req.params.userId;
-        const userDetails = await userModel.findById(userId);
-        if (!userDetails) {
-            return res.status(404).send({ status: false, message: "No such user exist." });
-        }let token = jwt.sign({
-            userId: userData._id.toString(),
-        }, 'StreamDB');
-      return res.cookie("access_token", token, {
-    //   httpOnly: true,
-      secure: process.env.NODE_ENV === "production"}).status(200).send({ status: true, message: "Successfully Login.", data:{"token":token}});
-    } catch (error) {
-        return res.status(500).send({ status: false, message: error.message });
-    }
-}
-
-
-
 // ====================================== LOGIN User ======================================================//
 
 
@@ -101,16 +79,16 @@ const loginUser = async function ( req , res ) {
         let { email, password } = data;
         if (Object.keys(data).length != 0) {
 
-            if (!email || !email.trim()) {
+            if (!email ) {
                 return res.status(400).send({ status: false, message: "Email is mandatory and can not be empty." });
             }
 
-            email = email.toLowerCase().trim();
+            email = email.toLowerCase();
             if (!validateEmail(email)) {
                 return res.status(400).send({ status: false, message: "Please enter a valid Email." });
             }
 
-            if (!password || !password.trim()) {
+            if (!password) {
                 return res.status(400).send({ status: false, message: "Password is mandatory and can not be empty." });
             }
 
@@ -122,13 +100,9 @@ const loginUser = async function ( req , res ) {
             let token = jwt.sign({
                 userId: userData._id.toString(),
             }, 'StreamDB');
-          return res.cookie("access_token", token, {
-          
-          secure: process.env.NODE_ENV === "production"}).status(200).send({ status: true, message: "Successfully Login.", data:{"token":token}});
-
-            // res.status(200).send({ status: true, message: "Successfully Login.", data:{"token":token}});
-        } else {
-            return res.status(400).send({ status: false, message: "Body can not be empty" });
+             res.header("token", token) 
+            return res.status(200).send({ status: true, message: "Successfully Login.", data:{"token":token}});
+       
         }
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message });
@@ -137,4 +111,4 @@ const loginUser = async function ( req , res ) {
 
 
 
-module.exports = { createUser, getUser, loginUser };
+module.exports = { createUser, loginUser };

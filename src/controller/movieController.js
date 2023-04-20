@@ -1,17 +1,24 @@
 const movieModel = require("../model/movieModel");
-const reviewModel = require("../model/reviewModel");
+
 
 
 const createMovie = async function (req,res){
     try{
         let data = req.body
+        // console.log(data);
+        // console.log(typeof(data.rating));
 
-        let {title,source,genres} = data
+        let {title,source,genres,price,rating} = data
 
         if (Object.keys(data).length == 0) {
             return res.status(400).send({ status: false, message: "Request can't be empty" });
         }
-
+        
+        
+        if(source.price!=0){
+            source.isSubscribed = true;
+        }
+    //    console.log(source.price);
         const existMovie = await movieModel.findOne({title:title})
         if(existMovie) {
             return res.status(400).send({ status: false, message: "This movie already exists"});
@@ -26,7 +33,7 @@ const createMovie = async function (req,res){
         data.genres = genres.toLowerCase()
         };
 
-        
+        rating = parseFloat(rating);
 
         const movieDetails = await movieModel.create(data)
 
@@ -45,7 +52,8 @@ const createMovie = async function (req,res){
 const getMovies = async function(req,res){
     try{
         let data = req.query;
-        const { title, genres, rating } = data;
+        let { title, genres, rating } = data;
+        console.log(req.body);
 
         if(title){
         data.title = title.toLowerCase()
@@ -57,19 +65,22 @@ const getMovies = async function(req,res){
         rating = parseFloat(rating);
 
 
-        const movieDetails = await movieModel.find(data);
+        let movieDetails = await movieModel.find(data);
 
         if (movieDetails.length == 0) {
             return res.status(404).send({ status: false, message: "movie not found " });
         }
 
-        res.status(200).send({ status: true, message: "Movie List.", data: movieDetails }); 
+        return res.status(200).send({ status: true, message: "Movie List.", data: movieDetails }); 
     }
     catch(error){
         return res.status(500).send({status:false, message: error.message})
     }
 }
  
+
+
+
 
 
 //====================== UPDATE API ======================

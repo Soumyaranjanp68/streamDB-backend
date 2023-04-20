@@ -10,10 +10,11 @@ const movieSchema = new mongoose.Schema({
         type:String,
         trim:true,
     },
-    // isReleased:{
-    //     type:Boolean,
-    //     default:false
-    // },
+    rating:{
+        type:Number,
+        max:5,
+
+    },
     genres:{
         type:String,
         trim:true
@@ -22,7 +23,10 @@ const movieSchema = new mongoose.Schema({
        URL:String,
        platform:String,
        price:Number,
-       isSubscribed:Boolean,    
+       isSubscribed:{
+        type :Boolean,
+        default:false
+       }    
     }
 },
 {timestamps:true})

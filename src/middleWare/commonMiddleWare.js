@@ -12,18 +12,14 @@ const jwt = require("jsonwebtoken");
 const authentication = async function ( req , res , next ) {
     try {
         let token = req.headers['x-api-key']; 
+        console.log(token);
        
         if (!token) {
             return res.status(400).send({ status: false, message: "Token must be Present." });
         }
-
         jwt.verify( token, "StreamDB", function ( err , decodedToken ) {
             if (err) {
-
-                 if (err.name === 'JsonWebTokenError') {
                     return res.status(403).send({ status: false, message: err.message });
-                 }
-
             } else {
                 req.token = decodedToken
                 next()
